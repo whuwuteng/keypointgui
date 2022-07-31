@@ -1,0 +1,11 @@
+=================================================================
+"mm3d" "Tapioca" "File" "MesCouples.xml" "-1" "ExpTxt=1" 
+ PID : 28685 ;   [Beginning at ] Fri Jul 29 15:12:46 2022
+ PID : 28685 ;   [Ending correctly at] Fri Jul 29 15:12:49 2022
+=================================================================
+"mm3d" "Tapioca" "File" "MesCouples.xml" "-1" 
+ PID : 6471 ;   [Beginning at ] Sat Jul 30 21:18:16 2022
+ PID : 6471 ;   [Ending correctly at] Sat Jul 30 21:18:17 2022
+=================================================================
+"mm3d" "Tapioca" "File" "-help" 
+ PID : 6557 ;   [Beginning at ] Sat Jul 30 21:18:37 2022

@@ -121,8 +121,9 @@ class MainFrame ( wx.Frame ):
 		self.left_contrast_slider = wx.Slider( self.tool_panel, wx.ID_ANY, 0, 0, 1000, wx.DefaultPosition, wx.Size( -1,200 ), wx.SL_INVERSE|wx.SL_VERTICAL )
 		bSizer16.Add( self.left_contrast_slider, 1, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
 
-
-		bSizer15.Add( bSizer16, 1, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 5 )
+		#refer to https://forums.codeblocks.org/index.php?topic=21254.0
+		#bSizer15.Add( bSizer16, 1, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 5 )
+		bSizer15.Add( bSizer16, 1, wx.EXPAND, 5 )
 
 		bSizer161 = wx.BoxSizer( wx.VERTICAL )
 
@@ -135,8 +136,8 @@ class MainFrame ( wx.Frame ):
 		bSizer161.Add( self.right_contrast_slider, 1, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
 
 
-		bSizer15.Add( bSizer161, 1, wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
-
+		#bSizer15.Add( bSizer161, 1, wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
+		bSizer15.Add( bSizer161, 1, wx.EXPAND, 5 )
 
 		bSizer141.Add( bSizer15, 0, wx.EXPAND, 5 )
 
@@ -172,7 +173,8 @@ class MainFrame ( wx.Frame ):
 		self.tool_panel.SetSizer( button_sizer )
 		self.tool_panel.Layout()
 		button_sizer.Fit( self.tool_panel )
-		bSizer14.Add( self.tool_panel, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
+		bSizer14.Add( self.tool_panel, 0, wx.ALL|wx.EXPAND, 5 )
+		#bSizer14.Add( self.tool_panel, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
 
 		image1_bsizer = wx.BoxSizer( wx.VERTICAL )
 
@@ -190,12 +192,14 @@ class MainFrame ( wx.Frame ):
 		image1_navigation_bsizer.Add( self.image1_nav_panel, 1, wx.EXPAND|wx.ALL, 5 )
 
 
-		image1_bsizer.Add( image1_navigation_bsizer, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
+		#image1_bsizer.Add( image1_navigation_bsizer, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
+		image1_bsizer.Add( image1_navigation_bsizer, 1, wx.ALL|wx.EXPAND, 5 )
 
 		image1_zoom_bsizer = wx.BoxSizer( wx.VERTICAL )
 
 		self.image1_zoom_panel = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		image1_zoom_bsizer.Add( self.image1_zoom_panel, 1, wx.EXPAND|wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		#image1_zoom_bsizer.Add( self.image1_zoom_panel, 1, wx.EXPAND|wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		image1_zoom_bsizer.Add( self.image1_zoom_panel, 1, wx.EXPAND|wx.ALL, 5 )
 
 		bSizer10 = wx.BoxSizer( wx.HORIZONTAL )
 
@@ -214,7 +218,8 @@ class MainFrame ( wx.Frame ):
 		image1_zoom_bsizer.Add( bSizer10, 0, wx.ALIGN_CENTER_HORIZONTAL, 5 )
 
 
-		image1_bsizer.Add( image1_zoom_bsizer, 1, wx.EXPAND|wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		#image1_bsizer.Add( image1_zoom_bsizer, 1, wx.EXPAND|wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		image1_bsizer.Add( image1_zoom_bsizer, 1, wx.EXPAND|wx.ALL, 5 )
 
 
 		bSizer14.Add( image1_bsizer, 1, wx.EXPAND, 5 )
@@ -235,12 +240,14 @@ class MainFrame ( wx.Frame ):
 		image2_navigation_bsizer.Add( self.image2_nav_panel, 1, wx.ALL|wx.EXPAND, 5 )
 
 
-		image2_bsizer.Add( image2_navigation_bsizer, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
+		#image2_bsizer.Add( image2_navigation_bsizer, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
+		image2_bsizer.Add( image2_navigation_bsizer, 1, wx.ALL|wx.EXPAND, 5 )
 
 		image2_zoom_bsizer = wx.BoxSizer( wx.VERTICAL )
 
 		self.image2_zoom_panel = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		image2_zoom_bsizer.Add( self.image2_zoom_panel, 1, wx.EXPAND|wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		image2_zoom_bsizer.Add( self.image2_zoom_panel, 1, wx.EXPAND|wx.ALL, 5 )
+		#image2_zoom_bsizer.Add( self.image2_zoom_panel, 1, wx.EXPAND|wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 
 		bSizer101 = wx.BoxSizer( wx.HORIZONTAL )
 
@@ -259,7 +266,8 @@ class MainFrame ( wx.Frame ):
 		image2_zoom_bsizer.Add( bSizer101, 0, wx.ALIGN_CENTER_HORIZONTAL, 5 )
 
 
-		image2_bsizer.Add( image2_zoom_bsizer, 1, wx.EXPAND|wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		#image2_bsizer.Add( image2_zoom_bsizer, 1, wx.EXPAND|wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		image2_bsizer.Add( image2_zoom_bsizer, 1, wx.EXPAND|wx.ALL, 5 )
 
 
 		bSizer14.Add( image2_bsizer, 1, wx.EXPAND, 5 )
@@ -326,7 +334,11 @@ class MainFrame ( wx.Frame ):
 		self.Bind( wx.EVT_MENU, self.on_close_button, id = self.exit_menu_item.GetId() )
 		self.Bind( wx.EVT_MENU, self.on_menu_item_about, id = self.menu_item_about.GetId() )
 
-	def __del__( self ):
+	# refer to https://wxpython-users.wxwidgets.narkive.com/bqo6qQ0D/del-in-wx-frame
+	# refer to https://groups.google.com/g/wxpython-users/c/vxMF4E3rzPM
+	#def __del__( self ):
+	def OnClose(self, event):
+		#print('close')
 		# Disconnect Events
 		self.align_original_button.Unbind( wx.EVT_BUTTON, None )
 		self.align_left_to_right_button.Unbind( wx.EVT_BUTTON, None )
@@ -394,6 +406,7 @@ class MainFrame ( wx.Frame ):
 		event.Skip()
 
 	def on_close_button( self, event ):
+		#self.OnClose(event)
 		event.Skip()
 
 	def on_menu_item_about( self, event ):

@@ -1,16 +1,47 @@
 ############################################
                  Keypoint GUI
 ############################################
-.. image:: /docs/gui_demo_657x508.jpg
-   :alt: gui_demo
+.. image:: /data/micmac_demo.png
+   :alt: micmac_demo
 
 Introduction
 ============
+
+Origin code is from `keypointgui <https://github.com/Kitware/keypointgui>`_.
+
 This project provides a GUI to select pairs of points between two images (see 
 `image correspondence <https://en.wikipedia.org/wiki/Correspondence_problem>`_),
 which can be saved or used to fit a homography. The GUI functionality is
 implemented with wxPython 4.X with opencv-python image processing. Though, the 
 tag `wxPython3X` provides compatibility with wxPython 3.X.
+
+
+Change 
+============
+1. No error when close the window.
+
+2. Exit boutton.
+
+3. support `Micmac <https://github.com/micmacIGN/micmac>`_ text/bin format, add the data path in the parameter
+
+.. code-block :: console
+  
+  $ cd data
+  $ ./cmd.sh
+  $ cd ../keypointgui
+  $ python gui.py --dir ../data
+
+Then open the input files:
+
+  Load Left Image -> im0.png
+  
+  Load Right Image -> im1.png
+  
+  Load Points -> Homol/Pastisim0.png/im1.png.txt 
+
+or :
+
+  Load Points -> Homol/Pastisim0.png/im1.png.dat
 
 Project Layout
 ==============
@@ -49,12 +80,31 @@ Installation
   # If version 3.X is present, checkout the wxPython3X branch:
   $ git checkout wxPython3X
  
-4. If using Ubuntu 16.04 (otherwise pip will try to build from source and fail):
+4.1 If using Ubuntu 16.04 (otherwise pip will try to build from source and fail):
 
 .. code-block :: console
   
   $ sudo pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython
 
+4.2 If using Ubuntu with sudo, `GTK should be installed<https://askubuntu.com/questions/1073145/how-to-install-wxpython-4-ubuntu-18-04>` (otherwise pip will try to build from source and fail):
+
+.. code-block :: console
+  
+  $ sudo apt install make gcc libgtk-3-dev libwebkitgtk-dev libwebkitgtk-3.0-dev libgstreamer-gl1.0-0 freeglut3 freeglut3-dev python-gst-1.0 python3-gst-1.0 libglib2.0-dev ubuntu-restricted-extras libgstreamer-plugins-base1.0-dev
+  
+
+4.3 If using Ubuntu 20.04 without sudo (otherwise pip will try to build from source and fail):
+
+.. code-block :: console
+  
+  $ pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 wxPython
+  
+when there is an error `libSDL2-2.0.so.0: cannot open shared object file<https://stackoverflow.com/questions/29711336/libsdl2-2-0-so-0-cannot-open-shared-object-file>`, install  SDL library, and then 
+  
+.. code-block :: console
+  
+  $ export LD_LIBRARY_PATH=/mypath/SDL2-2.0.22/lib:$LD_LIBRARY_PATH
+  
 5. Install with all dependencies (OpenCV and wxPython):
 
 .. code-block :: console

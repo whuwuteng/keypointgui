@@ -2,10 +2,14 @@
 from __future__ import division, print_function
 import wx
 from wx.lib.wordwrap import wordwrap
+#https://stackoverflow.com/questions/60754120/attributeerror-module-wx-has-no-attribute-adv-despite-phoenix
+import wx.adv
 import cv2
 import numpy as np
 import os
 import transformations
+import argparse
+import struct
 
 # TODO: cleaner solution for relative import handling.
 try:
@@ -420,29 +424,38 @@ class ImagePanelManager(object):
         if self.red_points is not None:
             dc.SetPen(wx.Pen(wx.RED, self.circle_thickness))
             dc.SetBrush(wx.Brush("red", wx.TRANSPARENT))
+            dc.SetFont(wx.Font(12, wx.MODERN, wx.NORMAL, wx.NORMAL))
+            dc.SetTextForeground(wx.RED)
             for i in range(len(self.red_points)):
                 x, y = self.red_points[i]
                 pt = np.dot(self.homography, [x,y,1])
                 x, y = pt[:2]/pt[2]
                 dc.DrawCircle(x, y, self.circle_radius)
+                dc.DrawText(str(i+1), x, y)
 
         if self.green_points is not None:
             dc.SetPen(wx.Pen(wx.GREEN, self.circle_thickness))
             dc.SetBrush(wx.Brush("green", wx.TRANSPARENT))
+            dc.SetFont(wx.Font(12, wx.MODERN, wx.NORMAL, wx.NORMAL))
+            dc.SetTextForeground(wx.GREEN)
             for i in range(len(self.green_points)):
                 x, y = self.green_points[i]
                 pt = np.dot(self.homography, [x,y,1])
                 x, y = pt[:2]/pt[2]
                 dc.DrawCircle(x, y, self.circle_radius)
+                dc.DrawText(str(i+1), x, y)
 
         if self.blue_points is not None:
             dc.SetPen(wx.Pen(wx.BLUE, self.circle_thickness))
             dc.SetBrush(wx.Brush("blue", wx.TRANSPARENT))
+            dc.SetFont(wx.Font(12, wx.MODERN, wx.NORMAL, wx.NORMAL))
+            dc.SetTextForeground(wx.BLUE)
             for i in range(len(self.blue_points)):
                 x, y = self.blue_points[i]
                 pt = np.dot(self.homography, [x,y,1])
                 x, y = pt[:2]/pt[2]
                 dc.DrawCircle(x, y, self.circle_radius)
+                dc.DrawText(str(i+1), x, y)
 
         if event is not None:
             event.Skip()
@@ -770,7 +783,7 @@ class MainFrame(form_builder_output.MainFrame):
     #constructor
     def __init__(self, parent, image_left, image_right, title1='Let Image',
                  title2='Right Image', passback_dict={'points',None},
-                 initial_zoom=400, window_title='Manual Image Registration'):
+                 initial_zoom=400, window_title='Manual Image Registration', datadir=None):
         """
         :param image1_topic: First image topic name.
         :type image_topics: list of str
@@ -839,7 +852,8 @@ class MainFrame(form_builder_output.MainFrame):
             self.nav_panel_right.set_red_points(pts2)
             self.zoom_panel_right.set_red_points(pts2)
 
-        self.Bind(wx.EVT_CLOSE, self.when_closed)
+        #self.Bind(wx.EVT_CLOSE, self.when_closed)
+        self.Bind(wx.EVT_CLOSE, self.on_close_button)
 
         # Allow zooming by mouse scrolling from the upper navigation panels.
         self.image1_nav_panel.Bind(wx.EVT_MOUSEWHEEL,
@@ -848,6 +862,7 @@ class MainFrame(form_builder_output.MainFrame):
                                    self.zoom_panel_right.on_zoom_mouse_wheel)
 
         self.Show()
+        self.datadir = datadir
         self.SetMinSize(self.GetSize())
 
     @property
@@ -1025,6 +1040,8 @@ class MainFrame(form_builder_output.MainFrame):
 
                 pos2 = np.dot(h, np.hstack([pos,1]))
                 self.zoom_panel_right.set_center(pos2[:2]/pos2[2])
+            else :
+                self.zoom_panel_right.set_center(pos)
 
             return
 
@@ -1067,7 +1084,8 @@ class MainFrame(form_builder_output.MainFrame):
 
                 pos2 = np.dot(h, np.hstack([pos,1]))
                 self.zoom_panel_left.set_center(pos2[:2]/pos2[2])
-
+            else :
+                self.zoom_panel_left.set_center(pos)
             return
 
         if self.click_state == 0:
@@ -1186,7 +1204,8 @@ class MainFrame(form_builder_output.MainFrame):
         """Ask user to load image from disk.
 
         """
-        fdlg = wx.FileDialog(self, 'Select an image.')
+        fdlg = wx.FileDialog(self, 'Select an image.', self.datadir) 
+        #'/home/TWu/BENCH_MNS_Montpellier')
         if fdlg.ShowModal() == wx.ID_OK:
             file_path = fdlg.GetPath()
         else:
@@ -1231,16 +1250,38 @@ class MainFrame(form_builder_output.MainFrame):
         np.savetxt(file_path, points)
 
     def on_load_points(self, event=None):
-        fdlg = wx.FileDialog(self, 'Load point correspondences', os.getcwd(),
-                             'points', '*.txt', style=wx.FD_OPEN)
+        # refer to https://stackoverflow.com/questions/8832714/how-to-use-multiple-wildcards-in-python-file-dialog
+        wildcard = "XY files (*.txt,*.dat)|*.txt;*.dat"
+        fdlg = wx.FileDialog(self, 'Load point correspondences', self.datadir, #'/home/TWu/BENCH_MNS_Montpellier', #os.getcwd(),
+                             'points', wildcard, style=wx.FD_OPEN)
         if fdlg.ShowModal() == wx.ID_OK:
             file_path = fdlg.GetPath()
         else:
             return
 
-        points = np.loadtxt(file_path)
+        filename, file_extension = os.path.splitext(file_path)
+        if file_extension == '.txt' :
+            points = np.loadtxt(file_path)
+        elif file_extension == '.dat' :
+            with open(file_path, 'rb') as readfile:
+                match_dim = struct.unpack('i', readfile.read(4))[0]
+                num_match = struct.unpack('i', readfile.read(4))[0]
+                points = []
+                for i in range(num_match) :
+                    num_pair = struct.unpack('i', readfile.read(4))[0]
+                    scale_pair = struct.unpack('d', readfile.read(8))[0]
+                    xy = struct.unpack('dddd', readfile.read(8 * 4))
+                    #print(xy)
+                    points.append(xy)
+            points = np.array(points)
+        else:
+            dlg = wx.MessageDialog(self, 'unsupported format','Warning',
+                                   wx.OK | wx.ICON_WARNING)
+            dlg.ShowModal()
+            dlg.Destroy()
+
         pts1 = points[:,:2]
-        pts2 = points[:,2:]
+        pts2 = points[:,2:4]
         self.nav_panel_left.set_red_points(pts1)
         self.zoom_panel_left.set_red_points(pts1)
         self.nav_panel_right.set_red_points(pts2)
@@ -1321,7 +1362,9 @@ class MainFrame(form_builder_output.MainFrame):
     def on_finish_button(self, event=None):
         self.Close()
 
-    def when_closed(self, event=None):
+    #def when_closed(self, event=None):
+    def on_close_button(self, event=None):
+        #print('exit')
         if self.nav_panel_left.red_points is not None and \
            self.nav_panel_right.red_points is not None:
             points = np.hstack([self.nav_panel_left.red_points,
@@ -1330,11 +1373,15 @@ class MainFrame(form_builder_output.MainFrame):
             points = None
 
         self.passback_dict['points'] = points
+
+        # https://stackoverflow.com/questions/56401279/how-to-fire-an-wx-evt-close-from-an-inner-panel
+        form_builder_output.MainFrame.OnClose(self, event)
+        self.Destroy()
         event.Skip()
 
 
 def manual_registration(image1=None, image2=None, points=None,
-                        title1='Left Image', title2='Right Image'):
+                        title1='Left Image', title2='Right Image', datadir=None):
         """Launch manual key point registration GUI.
 
         :param image1: Left image.
@@ -1355,20 +1402,26 @@ def manual_registration(image1=None, image2=None, points=None,
             assert points.shape[1] == 4
 
         passback_dict['points'] = points
-        app = wx.App(True)
+        #app = wx.App(True)
+        app = wx.App()
         frame = MainFrame(None, image1, image2, title1, title2,
-                          passback_dict=passback_dict)
+                          passback_dict=passback_dict, datadir=datadir)
         frame.Show(True)
         app.MainLoop()
         return passback_dict['points']
 
 
-def main():
+def main(datadir=None):
     """
 
     """
-    pts = manual_registration(None, None)
+    pts = manual_registration(None, None, datadir=datadir)
 
 
 if __name__ == '__main__':
-    main()
+    
+    parser = argparse.ArgumentParser(description='Show feature points')
+    parser.add_argument('--dir', type=str, default='', help='Directory containing files.')
+    args = parser.parse_args()
+
+    main(args.dir)
