@@ -86,7 +86,7 @@ Installation
   
   $ sudo pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython
 
-4.2 If using Ubuntu with sudo, `GTK should be installed<https://askubuntu.com/questions/1073145/how-to-install-wxpython-4-ubuntu-18-04>` (otherwise pip will try to build from source and fail):
+4.2 If using Ubuntu with sudo, `GTK should be installed <https://askubuntu.com/questions/1073145/how-to-install-wxpython-4-ubuntu-18-04>`_ (otherwise pip will try to build from source and fail):
 
 .. code-block :: console
   
@@ -99,7 +99,7 @@ Installation
   
   $ pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 wxPython
   
-when there is an error `libSDL2-2.0.so.0: cannot open shared object file<https://stackoverflow.com/questions/29711336/libsdl2-2-0-so-0-cannot-open-shared-object-file>`, install  SDL library, and then 
+when there is an error `libSDL2-2.0.so.0: cannot open shared object file <https://stackoverflow.com/questions/29711336/libsdl2-2-0-so-0-cannot-open-shared-object-file>`_, install  SDL library, and then 
   
 .. code-block :: console
   
