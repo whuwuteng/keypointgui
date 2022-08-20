@@ -430,7 +430,10 @@ class ImagePanelManager(object):
                 x, y = self.red_points[i]
                 pt = np.dot(self.homography, [x,y,1])
                 x, y = pt[:2]/pt[2]
-                dc.DrawCircle(x, y, self.circle_radius)
+                #dc.DrawCircle(x, y, self.circle_radius)
+                #dc.DrawCheckMark(x, y, self.circle_radius, self.circle_radius)
+                dc.DrawLine(x - self.circle_radius, y, x + self.circle_radius, y)
+                dc.DrawLine(x, y - self.circle_radius, x, y + self.circle_radius)
                 dc.DrawText(str(i+1), x, y)
 
         if self.green_points is not None:
