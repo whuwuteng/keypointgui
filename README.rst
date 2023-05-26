@@ -105,11 +105,19 @@ when there is an error `libSDL2-2.0.so.0: cannot open shared object file <https:
   
   $ export LD_LIBRARY_PATH=/mypath/SDL2-2.0.22/lib:$LD_LIBRARY_PATH
   
+  
 5. Install with all dependencies (OpenCV and wxPython):
 
 .. code-block :: console
 
   $ pip install .
+
+6. Use python3.10
+ .. code-block ::  console
+  
+  $ pip install attrdict3
+  $ sudo apt install libgtk-3-dev
+ 
 
 This package can be uninstalled by:
 
