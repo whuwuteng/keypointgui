@@ -1,0 +1,13 @@
+LICENSE
+README.rst
+setup.py
+keypointgui/__init__.py
+keypointgui/form_builder_output.py
+keypointgui/gui.py
+keypointgui.egg-info/PKG-INFO
+keypointgui.egg-info/SOURCES.txt
+keypointgui.egg-info/dependency_links.txt
+keypointgui.egg-info/requires.txt
+keypointgui.egg-info/top_level.txt
+keypointgui/tests/image.jpg
+keypointgui/tests/image_license.txt

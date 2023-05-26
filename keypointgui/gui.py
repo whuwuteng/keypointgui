@@ -215,7 +215,7 @@ class ImagePanelManager(object):
             if image.ndim == 2:
                 image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
-            self.wx_image.SetData(image.tostring())
+            self.wx_image.SetData(image.tobytes())
             self.wx_bitmap = self.wx_image.ConvertToBitmap()
 
     def on_click(self, event):
@@ -432,9 +432,9 @@ class ImagePanelManager(object):
                 x, y = pt[:2]/pt[2]
                 #dc.DrawCircle(x, y, self.circle_radius)
                 #dc.DrawCheckMark(x, y, self.circle_radius, self.circle_radius)
-                dc.DrawLine(x - self.circle_radius, y, x + self.circle_radius, y)
-                dc.DrawLine(x, y - self.circle_radius, x, y + self.circle_radius)
-                dc.DrawText(str(i+1), x, y)
+                dc.DrawLine(int(x - self.circle_radius + 0.5), int(y + 0.5), int(x + self.circle_radius + 0.5), int(y+0.5))
+                dc.DrawLine(int(x + 0.5), int(y - self.circle_radius + 0.5), int(x + 0.5), int(y + self.circle_radius + 0.5))
+                dc.DrawText(str(i+1), int(x + 0.5), int(y + 0.5))
 
         if self.green_points is not None:
             dc.SetPen(wx.Pen(wx.GREEN, self.circle_thickness))
@@ -457,8 +457,8 @@ class ImagePanelManager(object):
                 x, y = self.blue_points[i]
                 pt = np.dot(self.homography, [x,y,1])
                 x, y = pt[:2]/pt[2]
-                dc.DrawCircle(x, y, self.circle_radius)
-                dc.DrawText(str(i+1), x, y)
+                dc.DrawCircle(int(x + 0.5), int(y + 0.5), self.circle_radius)
+                dc.DrawText(str(i+1), int(x + 0.5), int(y + 0.5))
 
         if event is not None:
             event.Skip()
@@ -610,12 +610,12 @@ class NavigationPanelImage(ImagePanelManager):
 
             # Draw zoom window
             w, h = self.zoom_panel_image.wx_panel.GetSize()
-            pts = np.array([[0,w,w,0,0],[0,0,h,h,0],[1,1,1,1,1]])
+            pts = np.array([[0,w,w,0,0],[0,0,h,h,0],[1,1,1,1,1]], dtype=int)
             pts = np.dot(self.zoom_panel_image.inverse_homography, pts)
             pts = np.dot(self.homography, pts)
             pts = pts[:2]/pts[2]
             for i in range(4):
-                dc.DrawLine(pts[0,i], pts[1,i], pts[0,i+1], pts[1,i+1])
+                dc.DrawLine(int(pts[0,i] + 0.5), int(pts[1,i] + 0.5), int(pts[0,i+1] + 0.5), int(pts[1,i+1] + 0.5))
 
 
 class ZoomPanelImage(ImagePanelManager):
@@ -1031,7 +1031,8 @@ class MainFrame(form_builder_output.MainFrame):
         """
         if button == 1:
             self.zoom_panel_left.set_center(pos)
-            if self.sync_zooms_checkbox.GetValue():
+            # check later
+            """if self.sync_zooms_checkbox.GetValue():
                 h1 = self.nav_panel_left.align_homography
                 h2 = self.nav_panel_right.align_homography
                 if h1 is not None and h2 is None:
@@ -1044,7 +1045,7 @@ class MainFrame(form_builder_output.MainFrame):
                 pos2 = np.dot(h, np.hstack([pos,1]))
                 self.zoom_panel_right.set_center(pos2[:2]/pos2[2])
             else :
-                self.zoom_panel_right.set_center(pos)
+                self.zoom_panel_right.set_center(pos)"""
 
             return
 
@@ -1075,7 +1076,9 @@ class MainFrame(form_builder_output.MainFrame):
         """
         if button == 1:
             self.zoom_panel_right.set_center(pos)
-            if self.sync_zooms_checkbox.GetValue():
+            
+            # check later
+            """if self.sync_zooms_checkbox.GetValue():
                 h1 = self.nav_panel_left.align_homography
                 h2 = self.nav_panel_right.align_homography
                 if h1 is not None and h2 is None:
@@ -1088,7 +1091,7 @@ class MainFrame(form_builder_output.MainFrame):
                 pos2 = np.dot(h, np.hstack([pos,1]))
                 self.zoom_panel_left.set_center(pos2[:2]/pos2[2])
             else :
-                self.zoom_panel_left.set_center(pos)
+                self.zoom_panel_left.set_center(pos)"""
             return
 
         if self.click_state == 0:
